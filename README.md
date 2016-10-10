@@ -10,3 +10,12 @@ Ideally, I would like to make modifications to the sample app and branch off fro
 - VuMark generation process is not trivial (requires Adobe Illustrator)
 - Haven't delved into Unity enough to be comfortable, Unity has limitations for Native Android
 - I don't know any C++
+
+##Week 2 (10/9/2016)
+###Past Week
+Picked apart the demo app. Two versions. One uses Image Target and an imported device database. The other is the Cloud one, I haven't gotten that working yet. 
+###Next Week
+Change the 3D-image according to the tracker. Create OpenGL text mesh to overlay. 
+###Outstanding Issues:
+- Lots of reading code. Not really any good guides on specific things.  
+
