@@ -64,12 +64,16 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, SampleAppRen
     boolean mModelsLoaded = false;
 
     private static final float OBJECT_SCALE_FLOAT = 3.0f;
+
+    private Integer currentIdOnCard;
+    private double t0;
     
     
     public ImageTargetRenderer(ImageTargets activity, SampleApplicationSession session)
     {
         mActivity = activity;
         vuforiaAppSession = session;
+        t0 = -1.0;
         // SampleAppRenderer used to encapsulate the use of RenderingPrimitives setting
         // the device mode AR/VR and stereo mode
         mSampleAppRenderer = new SampleAppRenderer(this, Device.MODE.MODE_AR, false);
@@ -203,6 +207,25 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, SampleAppRen
             TrackableResult result = state.getTrackableResult(tIdx);
             Trackable trackable = result.getTrackable();
             printUserData(trackable);
+
+            String name = trackable.getName();
+            Integer id = trackable.getId();
+
+            if (id != mActivity.idCard()) {
+//                Log.d("CARYN", "call hideCard: "+id +" " + currentIdOnCard);
+                mActivity.hideCard();
+//                currentIdOnCard = null;
+                blinkTrackable(true);
+            }
+            if (id != mActivity.idCard()) {
+                // If we have a detection, let's make sure
+                // the card is visible
+                Log.d("CARYN", "call showCard:");
+                mActivity.showCard(String.valueOf(id), name);
+//                currentIdOnCard = id;
+            }
+
+
             Matrix44F modelViewMatrix_Vuforia = Tool
                     .convertPose2GLMatrix(result.getPose());
             float[] modelViewMatrix = modelViewMatrix_Vuforia.getData();
@@ -211,6 +234,8 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, SampleAppRen
                     : 1;
             textureIndex = trackable.getName().equalsIgnoreCase("tarmac") ? 2
                     : textureIndex;
+
+
 
             // deal with the modelview and projection matrices
             float[] modelViewProjection = new float[16];
@@ -287,10 +312,38 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, SampleAppRen
 
     }
 
+    private float blinkTrackable(boolean reset)
+    {
+        if (reset || t0 < 0.0f)
+        {
+            t0 = System.currentTimeMillis();
+        }
+        if (reset)
+        {
+            return 0.0f;
+        }
+        double time = System.currentTimeMillis();
+        double delta = (time-t0);
+
+        if (delta > 1000.0f)
+        {
+            return 1.0f;
+        }
+
+        if ((delta < 300.0f) || ((delta > 500.0f) && (delta < 800.0f)))
+        {
+            return 1.0f;
+        }
+
+        return 0.0f;
+    }
+
     private void printUserData(Trackable trackable)
     {
         String userData = (String) trackable.getUserData();
+        String name = (String) trackable.getName();
         Log.d(LOGTAG, "UserData:Retreived User Data	\"" + userData + "\"");
+        Log.d("CARYN", "renderFrame: \"" + name + "\"");
     }
     
     

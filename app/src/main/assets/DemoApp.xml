@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <QCARConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="qcar_config.xsd">
   <Tracking>
-    <ImageTarget name="99-LOGO" size="247 246" />
+    <ImageTarget name="HighTide" size="250.000000 267.857147" />
+    <ImageTarget name="Magnolia" size="250.000000 250.961533" />
+    <ImageTarget name="Harborside" size="250.000000 280.898865" />
   </Tracking>
 </QCARConfig>
