@@ -10,6 +10,8 @@ countries.
 package com.vuforia.samples.VuforiaSamples.app.ImageTargets;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -183,6 +185,8 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, SampleAppRen
         mSampleAppRenderer.onConfigurationChanged();
     }
 
+    Set<String> prevTracked = new HashSet<String>();
+
     // The render function called from SampleAppRendering by using RenderingPrimitives views.
     // The state is owned by SampleAppRenderer which is controlling it's lifecycle.
     // State should not be cached outside this method.
@@ -202,29 +206,34 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, SampleAppRen
         else
             GLES20.glFrontFace(GLES20.GL_CCW); // Back camera
 
+        // Found no trackables in frame, should reset the Cannabis Strain
+        if (state.getNumTrackableResults() == 0) {
+            mActivity._card = null;
+        }
+
+        Set<String> currTracked = new HashSet<String>();
         // Did we find any trackables this frame?
         for (int tIdx = 0; tIdx < state.getNumTrackableResults(); tIdx++) {
             TrackableResult result = state.getTrackableResult(tIdx);
             Trackable trackable = result.getTrackable();
-            printUserData(trackable);
+            //printUserData(trackable);
 
             String name = trackable.getName();
-            Integer id = trackable.getId();
+            int id = CannabisStrain.getId(name);
 
-            if (id != mActivity.idCard()) {
-//                Log.d("CARYN", "call hideCard: "+id +" " + currentIdOnCard);
-                mActivity.hideCard();
-//                currentIdOnCard = null;
-                blinkTrackable(true);
-            }
-            if (id != mActivity.idCard()) {
-                // If we have a detection, let's make sure
-                // the card is visible
-                Log.d("CARYN", "call showCard:");
-                mActivity.showCard(String.valueOf(id), name);
-//                currentIdOnCard = id;
-            }
+            currTracked.add(name);
 
+            // If we have a new detection, let's make sure
+            // the card is visible
+            if (!prevTracked.contains(name)) {
+                if (mActivity._card == null) {
+                    mActivity.showCard(name);
+                } else if (id != mActivity._card.getId()) {
+                    mActivity.hideCard();
+                    blinkTrackable(true);
+                    mActivity.showCard(name);
+                }
+            }
 
             Matrix44F modelViewMatrix_Vuforia = Tool
                     .convertPose2GLMatrix(result.getPose());
@@ -308,6 +317,8 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, SampleAppRen
 
         }
 
+        prevTracked = currTracked;
+
         GLES20.glDisable(GLES20.GL_DEPTH_TEST);
 
     }
@@ -343,7 +354,6 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, SampleAppRen
         String userData = (String) trackable.getUserData();
         String name = (String) trackable.getName();
         Log.d(LOGTAG, "UserData:Retreived User Data	\"" + userData + "\"");
-        Log.d("CARYN", "renderFrame: \"" + name + "\"");
     }
     
     

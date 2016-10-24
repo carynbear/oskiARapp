@@ -3,15 +3,6 @@
 
     <item
         is-multidex="true"
-        jar="C:\Users\Caryn\AppData\Local\Android\vuforia-sdk-android-6-0-117\samples\VuforiaSamples-6-0-112\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="22.0.1"
-        sha1="57432f804274855bbf86b5be1b88f7355d3cdde7">
-        <dex dex="C:\Users\Caryn\AppData\Local\Android\vuforia-sdk-android-6-0-117\samples\VuforiaSamples-6-0-112\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_50dbf4a079dff2cdbae1c96f94bc8c0b242b4aa2\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
         jar="C:\Users\Caryn\AppData\Local\Android\vuforia-sdk-android-6-0-117\build\java\vuforia\Vuforia.jar"
         jumboMode="true"
         optimize="true"
@@ -21,11 +12,29 @@
     </item>
     <item
         is-multidex="true"
+        jar="C:\Users\Caryn\.gradle\caches\modules-2\files-2.1\com.squareup.picasso\picasso\2.5.2\7446d06ec8d4f7ffcc53f1da37c95f200dcb9387\picasso-2.5.2.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="22.0.1"
+        sha1="7446d06ec8d4f7ffcc53f1da37c95f200dcb9387">
+        <dex dex="C:\Users\Caryn\AppData\Local\Android\vuforia-sdk-android-6-0-117\samples\VuforiaSamples-6-0-112\app\build\intermediates\transforms\dex\debug\folders\1000\10\picasso-2.5.2_f5045507ef66f8b24012a211fd14852c927a7096\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Caryn\AppData\Local\Android\vuforia-sdk-android-6-0-117\samples\VuforiaSamples-6-0-112\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="22.0.1"
+        sha1="aeafdd7ddef2f83f0aa24dec57e9d1cb4f562af5">
+        <dex dex="C:\Users\Caryn\AppData\Local\Android\vuforia-sdk-android-6-0-117\samples\VuforiaSamples-6-0-112\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_50dbf4a079dff2cdbae1c96f94bc8c0b242b4aa2\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
         jar="C:\Users\Caryn\AppData\Local\Android\vuforia-sdk-android-6-0-117\samples\VuforiaSamples-6-0-112\app\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
         jumboMode="true"
         optimize="true"
         revision="22.0.1"
-        sha1="edc25e58d2a1a81c05e59871c47e482b743ae32b">
+        sha1="93a2103aed4c0cd8710df2b8f7c536e9fd9c4a7a">
         <dex dex="C:\Users\Caryn\AppData\Local\Android\vuforia-sdk-android-6-0-117\samples\VuforiaSamples-6-0-112\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run_145b8fc8c4a80dcbf9f2b37b7f35cd3f4f50b819\classes.dex" />
     </item>
 

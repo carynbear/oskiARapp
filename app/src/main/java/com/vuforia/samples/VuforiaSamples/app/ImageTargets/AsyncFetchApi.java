@@ -22,10 +22,10 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class AsyncFetchApi extends AsyncTask<String, Void, String[]> {
     private ProgressDialog dialog;
-    private Activity activity;
+    private ImageTargets activity;
     private View viewCard;
 
-    public AsyncFetchApi(Activity activity, View viewCard) {
+    public AsyncFetchApi(ImageTargets activity, View viewCard) {
         this.activity = activity;
         this.viewCard = viewCard;
         dialog = new ProgressDialog(activity);
@@ -46,26 +46,16 @@ public class AsyncFetchApi extends AsyncTask<String, Void, String[]> {
         String request = params[0];
         String id = null;
 
-        switch(request) {
-            case "blue_dream":
-                id = "14084";
-            case "green_crack":
-                id = "14109";
-            case "gsc":
-                id = "14013";
-            case "gdp":
-                id = "14007";
-            case "sour_diesel":
-                id = "14005";
-        }
-
+        id = String.valueOf(CannabisStrain.getId(request));
+        Log.d("REQUEST API: ",request);
         try {
-            if (id != null) {
+            Log.d("ID API: ",id);
+            if (!id.equals("0")) {
                 query = "https://mystrain-stg.herokuapp.com/api/v1/products/" + id;
                 Log.d("FETCH API", "" + query);
                 response = get(query);
                 Log.d("REPONSE", "" + response);
-                return new String[]{response};
+                return new String[]{response, id};
             } else {
                 throw new Exception("Request not understood");
             }
@@ -77,10 +67,8 @@ public class AsyncFetchApi extends AsyncTask<String, Void, String[]> {
     @Override
     protected void onPostExecute(String... result) {
         String TAG = "--POST FETCH API--";
-        CannabisStrain c = new CannabisStrain(viewCard, activity);
-        String indica_p = null;
-        String sativa_p = null;
-
+        Log.d(TAG, "RESULT: "+ result[0]);
+        CannabisStrain c = new CannabisStrain(viewCard, activity, result[1]);
         try {
             JSONObject jsonObject = new JSONObject(result[0]);
             JSONObject product = jsonObject.getJSONObject("data").getJSONObject("product");
@@ -90,15 +78,12 @@ public class AsyncFetchApi extends AsyncTask<String, Void, String[]> {
             c.background = product.getJSONObject("background").getString("medium");
             c.flavor = product.getString("flavor");
             c.flavor_icon = product.getString("flavor_icon");
-
             JSONObject positive_effect = null;
             positive_effect = jsonObject.getJSONObject("data").getJSONArray("positive_effects").getJSONObject(0);
             c.positive_effect_name  = positive_effect.getString("name");
             c.positive_effect_icon = positive_effect.getJSONObject("icon").getString("small");
-            indica_p = product.getString("indica_percentage");
-            sativa_p = product.getString("sativa_percentage");
-            c.indica_sativa = indica_p + "/" +sativa_p;
-            c.description = jsonObject.getString("description");
+            c.indica_sativa = product.getString("indica_percentage") +'/' + product.getString("sativa_percentage");
+            c.description = product.getString("description");
         } catch (JSONException e) {
             dialog.dismiss();
             e.printStackTrace();
@@ -106,7 +91,7 @@ public class AsyncFetchApi extends AsyncTask<String, Void, String[]> {
         if (dialog.isShowing()) {
             dialog.dismiss();
         }
-
+        activity._card = c;
         c.load();
     }
 

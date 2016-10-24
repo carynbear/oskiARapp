@@ -2,6 +2,8 @@ package com.vuforia.samples.VuforiaSamples.app.ImageTargets;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,6 +17,8 @@ import com.vuforia.samples.VuforiaSamples.R;
  */
 
 public class CannabisStrain {
+    private String id;
+
     String time = null;
     String name = null;
     String logo = null;
@@ -45,7 +49,7 @@ public class CannabisStrain {
 
     public CannabisStrain(){};
 
-    public CannabisStrain(View v, Context context) {
+    public CannabisStrain(View v, Context context, String id) {
         this._viewCard = v;
         this.context = context;
         time_tv = (TextView) _viewCard.findViewById(R.id.card_time);
@@ -57,29 +61,47 @@ public class CannabisStrain {
         positive_effect_name_tv = (TextView) _viewCard.findViewById(R.id.card_effect);
         positive_effect_icon_iv = (ImageView) _viewCard.findViewById(R.id.card_effect_icon);
         indica_sativa_tv = (TextView) _viewCard.findViewById(R.id.indica_sativa_ratio);
-        description_tv = (TextView) _viewCard.findViewById(R.id.card_details);
+        description_tv = (TextView) _viewCard.findViewById(R.id.card_description);
+        reset();
     }
 
     void load(){
-        time_tv.setText(time);
+        if (!logo.equals("")) {
+            Log.d("LOGO", "load: " + logo);
+            //Picasso.with(context).load(logo).into(logo_iv);
+            Picasso.with(context).load("https://s3.amazonaws.com/mystrain-production/products/logos/000/000/042/card/Blue-Dream.png?1459532914").into(logo_iv);
+        }
+        if (!positive_effect_icon.equals("")) {
+            Picasso.with(context).load(positive_effect_icon).into(positive_effect_icon_iv);
+        }
+        if (!flavor_icon.equals("")) {
+            Picasso.with(context).load(flavor_icon).into(flavor_icon_iv);
+        }
+        if (!time.equalsIgnoreCase("null")){
+            time_tv.setText(time);
+        }
         name_tv.setText(name);
-        Picasso.with(context).load(logo).into(logo_iv);
-        flavor_tv.setText(flavor);
-        Picasso.with(context).load(flavor_icon).into(flavor_icon_iv);
+        if (!flavor.equalsIgnoreCase("null")){
+            flavor_tv.setText(flavor);
+        }
         positive_effect_name_tv.setText(positive_effect_name);
-        Picasso.with(context).load(positive_effect_icon).into(positive_effect_icon_iv);
         indica_sativa_tv.setText(indica_sativa);
-        description_tv.setText(description);
+        description_tv.setText(Html.fromHtml(description));
+
+        //ToDo: put into callback for Picasso
+        logo_iv.setVisibility(View.VISIBLE);
+        positive_effect_icon_iv.setVisibility(View.VISIBLE);
+        flavor_icon_iv.setVisibility(View.VISIBLE);
     }
 
     void clear() {
         time_tv.setText("");
         name_tv.setText("");
-        Picasso.with(context).load(logo).into(logo_iv);
+        logo_iv.setVisibility(View.INVISIBLE);
         flavor_tv.setText("");
-        Picasso.with(context).load(flavor_icon).into(flavor_icon_iv);
+        flavor_icon_iv.setVisibility(View.INVISIBLE);
         positive_effect_name_tv.setText("");
-        Picasso.with(context).load(positive_effect_icon).into(positive_effect_icon_iv);
+        positive_effect_icon_iv.setVisibility(View.INVISIBLE);
         indica_sativa_tv.setText("");
         description_tv.setText("");
     }
@@ -87,12 +109,36 @@ public class CannabisStrain {
     void reset() {
         time_tv.setText("ANYTIME");
         name_tv.setText("UNKNOWN");
-        Picasso.with(context).load(logo).into(logo_iv);
+        logo_iv.setVisibility(View.INVISIBLE);
         flavor_tv.setText("FLAVOR");
-        Picasso.with(context).load(flavor_icon).into(flavor_icon_iv);
+        flavor_icon_iv.setVisibility(View.INVISIBLE);
         positive_effect_name_tv.setText("EFFECT");
-        Picasso.with(context).load(positive_effect_icon).into(positive_effect_icon_iv);
+        positive_effect_icon_iv.setVisibility(View.INVISIBLE);
         indica_sativa_tv.setText("0/0");
         description_tv.setText("THIS IS A FILLER DESCRIPTION");
+    }
+
+    int getId(){
+        return Integer.getInteger(id);
+    }
+
+    static int getId(String name){
+        switch(name) {
+            case "blue_dream":
+                return 14084;
+            case "green_crack":
+                return 14109;
+            case "girl_scout_cookies":
+                return 14013;
+            case "gdp":
+                return 14007;
+            case "sour_diesel":
+                return 14005;
+            case "HighTide":
+                return 1936;
+            case "Harborside":
+                return 1938;
+        }
+        return 0;
     }
 }

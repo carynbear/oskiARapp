@@ -12,6 +12,7 @@ package com.vuforia.samples.VuforiaSamples.app.ImageTargets;
 
 import java.util.ArrayList;
 import java.util.Vector;
+import java.util.concurrent.locks.Lock;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -43,6 +44,7 @@ import android.widget.Toast;
 
 import com.vuforia.CameraDevice;
 import com.vuforia.DataSet;
+import com.vuforia.Image;
 import com.vuforia.ObjectTracker;
 import com.vuforia.State;
 import com.vuforia.STORAGE_TYPE;
@@ -76,9 +78,10 @@ public class ImageTargets extends Activity implements SampleApplicationControl,
     private ArrayList<String> mDatasetStrings = new ArrayList<String>();
 
     private View _viewCard;
-    private TextView _textName;
-    private TextView _textTime;
-    private ImageView _imageLogo;
+    protected CannabisStrain _card = null;
+//    private TextView _textName;
+//    private TextView _textTime;
+//    private ImageView _imageLogo;
 
 
     // Our OpenGL view:
@@ -349,28 +352,22 @@ public class ImageTargets extends Activity implements SampleApplicationControl,
         addContentView(_viewCard, layoutParamsControl);
     }
 
-    private Integer _cardId = null;
-
-    void showCard(final String id, final String value) {
-        Log.d("CARYN", "showCard: !");
-                  //final String value, final Bitmap bitmap) {
+    void showCard(final String name) {
         final Context context = this;
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                // if scard is already visible with same VuMark, do nothing
-                if ((_viewCard.getVisibility() == View.VISIBLE) && (_textTime.getText().equals(value))) {
+                // if card is already visible with same Cannabis Strain do nothing
+                if ((_viewCard.getVisibility() == View.VISIBLE) && _card != null && (_card.getId() == CannabisStrain.getId(name))) {
                     return;
                 }
                 Animation bottomUp = AnimationUtils.loadAnimation(context,
                         R.anim.bottom_up);
 
-                _textName.setText(value);
-                _textTime.setText(id);
-                _cardId = Integer.valueOf(id);
-//                if (bitmap != null) {
-//                    _imageLogo.setImageBitmap(bitmap);
-//                }
+                //api call (should also set _card variable)
+                AsyncFetchApi apiCall = new AsyncFetchApi((ImageTargets)context, _viewCard);
+                apiCall.execute(name);
+
                 _viewCard.bringToFront();
                 _viewCard.setVisibility(View.VISIBLE);
                 _viewCard.startAnimation(bottomUp);
@@ -380,12 +377,7 @@ public class ImageTargets extends Activity implements SampleApplicationControl,
     }
 
 
-    Integer idCard(){
-        return _cardId;
-    }
-
     void hideCard() {
-        Log.d("CARYN", "hideCard: !");
         final Context context = this;
         runOnUiThread(new Runnable() {
             @Override
@@ -394,15 +386,10 @@ public class ImageTargets extends Activity implements SampleApplicationControl,
                 if (_viewCard.getVisibility() != View.VISIBLE) {
                     return;
                 }
-                _textName.setText("");
-                _textTime.setText("");
                 Animation bottomDown = AnimationUtils.loadAnimation(context,
                         R.anim.bottom_down);
-                _cardId = null;
-
                 _viewCard.startAnimation(bottomDown);
                 _viewCard.setVisibility(View.INVISIBLE);
-                // mUILayout.invalidate();
             }
         });
     }
@@ -520,9 +507,9 @@ public class ImageTargets extends Activity implements SampleApplicationControl,
             else
                 Log.e(LOGTAG, "Unable to enable continuous autofocus");
             
-            mSampleAppMenu = new SampleAppMenu(this, this, "Image Targets",
-                mGlView, mUILayout, null);
-            setSampleAppMenuSettings();
+//            mSampleAppMenu = new SampleAppMenu(this, this, "Image Targets",
+//                mGlView, mUILayout, null);
+//            setSampleAppMenuSettings();
             
         } else
         {
