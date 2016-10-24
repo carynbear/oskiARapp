@@ -19,3 +19,12 @@ Change the 3D-image according to the tracker. Create OpenGL text mesh to overlay
 ###Outstanding Issues:
 - Lots of reading code. Not really any good guides on specific things.  
 
+##Week 3 and 4 (10/16/2016 and 10/23/2016)
+###Past Week
+Got api calls to work but not correct calls.
+###Next Week
+Change the 3D-image according to the tracker.
+###Outstanding Issues:
+- Need to refactor code (remove unnecessary code)
+- Get product id
+- Fix image loads
