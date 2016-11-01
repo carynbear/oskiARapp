@@ -206,7 +206,7 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, SampleAppRen
         else
             GLES20.glFrontFace(GLES20.GL_CCW); // Back camera
 
-        // Found no trackables in frame, should reset the Cannabis Strain
+//         Found no trackables in frame, should reset the Cannabis Strain
         if (state.getNumTrackableResults() == 0) {
             mActivity._card = null;
         }
@@ -219,14 +219,15 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, SampleAppRen
             //printUserData(trackable);
 
             String name = trackable.getName();
+            Log.d("NAME", "renderFrame: "+ name);
             int id = CannabisStrain.getId(name);
-
             currTracked.add(name);
 
             // If we have a new detection, let's make sure
             // the card is visible
             if (!prevTracked.contains(name)) {
                 if (mActivity._card == null) {
+                    Log.d("NO CARD", "renderFrame: show card");
                     mActivity.showCard(name);
                 } else if (id != mActivity._card.getId()) {
                     mActivity.hideCard();

@@ -74,8 +74,11 @@ public class AsyncFetchApi extends AsyncTask<String, Void, String[]> {
             JSONObject product = jsonObject.getJSONObject("data").getJSONObject("product");
             c.time = product.getString("time");
             c.name = product.getString("name");
-            c.logo = product.getJSONObject("logo").getString("small"); //or large
+            c.logo = product.getJSONObject("logo").getString("large"); //or large
             c.background = product.getJSONObject("background").getString("medium");
+//            if (c.background == null || c.background.equals("")) {
+//                c.background = product.getJSONObject("background").getString("medium");
+//            }
             c.flavor = product.getString("flavor");
             c.flavor_icon = product.getString("flavor_icon");
             JSONObject positive_effect = null;

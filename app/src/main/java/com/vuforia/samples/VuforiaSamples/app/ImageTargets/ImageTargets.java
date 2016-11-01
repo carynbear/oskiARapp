@@ -125,7 +125,7 @@ public class ImageTargets extends Activity implements SampleApplicationControl,
         vuforiaAppSession = new SampleApplicationSession(this);
         
         startLoadingAnimation();
-        mDatasetStrings.add("DemoApp.xml");
+        mDatasetStrings.add("Logos.xml");
 
         
         vuforiaAppSession
@@ -338,7 +338,7 @@ public class ImageTargets extends Activity implements SampleApplicationControl,
         LayoutInflater inflater = getLayoutInflater();
         _viewCard = inflater.inflate(R.layout.info_card, null);
         _viewCard.setVisibility(View.INVISIBLE);
-        LinearLayout cardLayout = (LinearLayout) _viewCard.findViewById(R.id.card_layout);
+        RelativeLayout cardLayout = (RelativeLayout) _viewCard.findViewById(R.id.card_layout);
 
         cardLayout.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
@@ -390,6 +390,7 @@ public class ImageTargets extends Activity implements SampleApplicationControl,
                         R.anim.bottom_down);
                 _viewCard.startAnimation(bottomDown);
                 _viewCard.setVisibility(View.INVISIBLE);
+                _card = null;
             }
         });
     }
