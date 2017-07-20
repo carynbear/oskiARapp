@@ -56,7 +56,7 @@ public class SampleApplicationSession implements UpdateCallbackInterface
     // The async tasks to initialize the Vuforia SDK:
     private InitVuforiaTask mInitVuforiaTask;
     private LoadTrackerTask mLoadTrackerTask;
-    
+
     // An object used for synchronizing Vuforia initialization, dataset loading
     // and the Android onDestroy() life cycle event. If the application is
     // destroyed while a data set is still being loaded, then we wait for the

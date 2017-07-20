@@ -10,6 +10,8 @@ countries.
 package com.vuforia.samples.VuforiaSamples.app.ImageTargets;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -64,12 +66,16 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, SampleAppRen
     boolean mModelsLoaded = false;
 
     private static final float OBJECT_SCALE_FLOAT = 3.0f;
+
+    private Integer currentIdOnCard;
+    private double t0;
     
     
     public ImageTargetRenderer(ImageTargets activity, SampleApplicationSession session)
     {
         mActivity = activity;
         vuforiaAppSession = session;
+        t0 = -1.0;
         // SampleAppRenderer used to encapsulate the use of RenderingPrimitives setting
         // the device mode AR/VR and stereo mode
         mSampleAppRenderer = new SampleAppRenderer(this, Device.MODE.MODE_AR, false);
@@ -179,6 +185,8 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, SampleAppRen
         mSampleAppRenderer.onConfigurationChanged();
     }
 
+    Set<String> prevTracked = new HashSet<String>();
+
     // The render function called from SampleAppRendering by using RenderingPrimitives views.
     // The state is owned by SampleAppRenderer which is controlling it's lifecycle.
     // State should not be cached outside this method.
@@ -198,11 +206,36 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, SampleAppRen
         else
             GLES20.glFrontFace(GLES20.GL_CCW); // Back camera
 
+//         Found no trackables in frame, should reset the Cannabis Strain
+        if (state.getNumTrackableResults() == 0) {
+            mActivity._card = null;
+        }
+
+        Set<String> currTracked = new HashSet<String>();
         // Did we find any trackables this frame?
         for (int tIdx = 0; tIdx < state.getNumTrackableResults(); tIdx++) {
             TrackableResult result = state.getTrackableResult(tIdx);
             Trackable trackable = result.getTrackable();
-            printUserData(trackable);
+            //printUserData(trackable);
+
+            String name = trackable.getName();
+            Log.d("NAME", "renderFrame: "+ name);
+            int id = CannabisStrain.getId(name);
+            currTracked.add(name);
+
+            // If we have a new detection, let's make sure
+            // the card is visible
+            if (!prevTracked.contains(name)) {
+                if (mActivity._card == null) {
+                    Log.d("NO CARD", "renderFrame: show card");
+                    mActivity.showCard(name);
+                } else if (id != mActivity._card.getId()) {
+                    mActivity.hideCard();
+                    blinkTrackable(true);
+                    mActivity.showCard(name);
+                }
+            }
+
             Matrix44F modelViewMatrix_Vuforia = Tool
                     .convertPose2GLMatrix(result.getPose());
             float[] modelViewMatrix = modelViewMatrix_Vuforia.getData();
@@ -211,6 +244,8 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, SampleAppRen
                     : 1;
             textureIndex = trackable.getName().equalsIgnoreCase("tarmac") ? 2
                     : textureIndex;
+
+
 
             // deal with the modelview and projection matrices
             float[] modelViewProjection = new float[16];
@@ -283,13 +318,42 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, SampleAppRen
 
         }
 
+        prevTracked = currTracked;
+
         GLES20.glDisable(GLES20.GL_DEPTH_TEST);
 
+    }
+
+    private float blinkTrackable(boolean reset)
+    {
+        if (reset || t0 < 0.0f)
+        {
+            t0 = System.currentTimeMillis();
+        }
+        if (reset)
+        {
+            return 0.0f;
+        }
+        double time = System.currentTimeMillis();
+        double delta = (time-t0);
+
+        if (delta > 1000.0f)
+        {
+            return 1.0f;
+        }
+
+        if ((delta < 300.0f) || ((delta > 500.0f) && (delta < 800.0f)))
+        {
+            return 1.0f;
+        }
+
+        return 0.0f;
     }
 
     private void printUserData(Trackable trackable)
     {
         String userData = (String) trackable.getUserData();
+        String name = (String) trackable.getName();
         Log.d(LOGTAG, "UserData:Retreived User Data	\"" + userData + "\"");
     }
     

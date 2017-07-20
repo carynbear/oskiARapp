@@ -83,7 +83,7 @@
           'android:screenOrientation' or in code by calling
           Activity.setRequestedOrientation().
         -->
-        <!-- Splash Screen Activity -->
+        <!-- Splash Screen Activity is Launcher Activity -->
          <activity
             android:name=".ui.ActivityList.ActivitySplashScreen"
             android:configChanges="orientation|keyboardHidden|screenSize|smallestScreenSize"

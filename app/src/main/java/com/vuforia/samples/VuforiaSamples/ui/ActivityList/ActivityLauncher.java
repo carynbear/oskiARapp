@@ -26,17 +26,18 @@ import com.vuforia.samples.VuforiaSamples.R;
 public class ActivityLauncher extends ListActivity
 {
     
-    private String mActivities[] = { "Image Targets", "VuMark", "Cylinder Targets",
-            "Multi Targets", "User Defined Targets", "Object Reco", "Cloud Reco", "Text Reco",
-            "Frame Markers", "Virtual Buttons"};
+//    private String mActivities[] = { "Image Targets", "VuMark", "Cylinder Targets",
+//            "Multi Targets", "User Defined Targets", "Object Reco", "Cloud Reco", "Text Reco",
+//            "Frame Markers", "Virtual Buttons"};
     
-    
+    private String mActivities[] = {"OskiLab"};
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-            R.layout.activities_list_text_view, mActivities);
+            R.layout.activities_list_text_view, mActivities); //turns each item of mActivities to a text item of the list
         
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -58,9 +59,14 @@ public class ActivityLauncher extends ListActivity
         {
             case 0:
                 intent.putExtra("ACTIVITY_TO_LAUNCH",
-                    "app.ImageTargets.ImageTargets");
+                        "app.ImageTargets.ImageTargets");
                 intent.putExtra("ABOUT_TEXT", "ImageTargets/IT_about.html");
                 break;
+//            case 0:
+//                intent.putExtra("ACTIVITY_TO_LAUNCH",
+//                    "app.ImageTargets.ImageTargets");
+//                intent.putExtra("ABOUT_TEXT", "ImageTargets/oski_about.html");
+//                break;
             case 1:
                 intent.putExtra("ACTIVITY_TO_LAUNCH",
                         "app.VuMark.VuMark");

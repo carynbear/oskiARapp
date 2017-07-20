@@ -12,9 +12,11 @@ package com.vuforia.samples.VuforiaSamples.app.ImageTargets;
 
 import java.util.ArrayList;
 import java.util.Vector;
+import java.util.concurrent.locks.Lock;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -26,17 +28,23 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.CheckBox;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.vuforia.CameraDevice;
 import com.vuforia.DataSet;
-import com.vuforia.Device;
+import com.vuforia.Image;
 import com.vuforia.ObjectTracker;
 import com.vuforia.State;
 import com.vuforia.STORAGE_TYPE;
@@ -68,7 +76,14 @@ public class ImageTargets extends Activity implements SampleApplicationControl,
     private int mStartDatasetsIndex = 0;
     private int mDatasetsNumber = 0;
     private ArrayList<String> mDatasetStrings = new ArrayList<String>();
-    
+
+    private View _viewCard;
+    protected CannabisStrain _card = null;
+//    private TextView _textName;
+//    private TextView _textTime;
+//    private ImageView _imageLogo;
+
+
     // Our OpenGL view:
     private SampleApplicationGLView mGlView;
     
@@ -110,8 +125,8 @@ public class ImageTargets extends Activity implements SampleApplicationControl,
         vuforiaAppSession = new SampleApplicationSession(this);
         
         startLoadingAnimation();
-        mDatasetStrings.add("StonesAndChips.xml");
-        mDatasetStrings.add("Tarmac.xml");
+        mDatasetStrings.add("Logos.xml");
+
         
         vuforiaAppSession
             .initAR(this, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -306,7 +321,7 @@ public class ImageTargets extends Activity implements SampleApplicationControl,
         
         mUILayout.setVisibility(View.VISIBLE);
         mUILayout.setBackgroundColor(Color.BLACK);
-        
+
         // Gets a reference to the loading dialog
         loadingDialogHandler.mLoadingDialogContainer = mUILayout
             .findViewById(R.id.loading_indicator);
@@ -318,7 +333,66 @@ public class ImageTargets extends Activity implements SampleApplicationControl,
         // Adds the inflated layout to the view
         addContentView(mUILayout, new LayoutParams(LayoutParams.MATCH_PARENT,
             LayoutParams.MATCH_PARENT));
-        
+
+        LayoutParams layoutParamsControl = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        LayoutInflater inflater = getLayoutInflater();
+        _viewCard = inflater.inflate(R.layout.info_card, null);
+        _viewCard.setVisibility(View.INVISIBLE);
+        RelativeLayout cardLayout = (RelativeLayout) _viewCard.findViewById(R.id.card_layout);
+
+        cardLayout.setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    hideCard();
+                    return true;
+                }
+                return false;
+            }
+        });
+        addContentView(_viewCard, layoutParamsControl);
+    }
+
+    void showCard(final String name) {
+        final Context context = this;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                // if card is already visible with same Cannabis Strain do nothing
+                if ((_viewCard.getVisibility() == View.VISIBLE) && _card != null && (_card.getId() == CannabisStrain.getId(name))) {
+                    return;
+                }
+                Animation bottomUp = AnimationUtils.loadAnimation(context,
+                        R.anim.bottom_up);
+
+                //api call (should also set _card variable)
+                AsyncFetchApi apiCall = new AsyncFetchApi((ImageTargets)context, _viewCard);
+                apiCall.execute(name);
+
+                _viewCard.bringToFront();
+                _viewCard.setVisibility(View.VISIBLE);
+                _viewCard.startAnimation(bottomUp);
+                // mUILayout.invalidate();
+            }
+        });
+    }
+
+
+    void hideCard() {
+        final Context context = this;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                // if card not visible, do nothing
+                if (_viewCard.getVisibility() != View.VISIBLE) {
+                    return;
+                }
+                Animation bottomDown = AnimationUtils.loadAnimation(context,
+                        R.anim.bottom_down);
+                _viewCard.startAnimation(bottomDown);
+                _viewCard.setVisibility(View.INVISIBLE);
+                _card = null;
+            }
+        });
     }
     
     
@@ -360,7 +434,7 @@ public class ImageTargets extends Activity implements SampleApplicationControl,
             Log.d(LOGTAG, "UserData:Set the following user data "
                 + (String) trackable.getUserData());
         }
-        
+
         return true;
     }
     
@@ -434,9 +508,9 @@ public class ImageTargets extends Activity implements SampleApplicationControl,
             else
                 Log.e(LOGTAG, "Unable to enable continuous autofocus");
             
-            mSampleAppMenu = new SampleAppMenu(this, this, "Image Targets",
-                mGlView, mUILayout, null);
-            setSampleAppMenuSettings();
+//            mSampleAppMenu = new SampleAppMenu(this, this, "Image Targets",
+//                mGlView, mUILayout, null);
+//            setSampleAppMenuSettings();
             
         } else
         {
@@ -641,8 +715,9 @@ public class ImageTargets extends Activity implements SampleApplicationControl,
         mStartDatasetsIndex = CMD_DATASET_START_INDEX;
         mDatasetsNumber = mDatasetStrings.size();
         
-        group.addRadioItem("Stones & Chips", mStartDatasetsIndex, true);
-        group.addRadioItem("Tarmac", mStartDatasetsIndex + 1, false);
+//        group.addRadioItem("Stones & Chips", mStartDatasetsIndex, true);
+//        group.addRadioItem("Tarmac", mStartDatasetsIndex + 1, false);
+        group.addRadioItem("Caryn's Image", mStartDatasetsIndex, true);
         
         mSampleAppMenu.attachMenu();
     }
