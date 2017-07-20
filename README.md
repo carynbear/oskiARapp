@@ -1,3 +1,5 @@
+Developed by Caryn Tran
+
 # ABOUT
 This is a project done at UC Berkeley under the supervision of the Berkeley Institute of Data Science. This is an android app demo created to explore the usage of image recognition and AR in the product displays. 
 
